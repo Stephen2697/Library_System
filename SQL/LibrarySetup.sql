@@ -15,30 +15,27 @@ CODE DEBUGGED WITH ORACLE LIVE SQL - 'https://livesql.oracle.com'
 /*Create new table: USERS*/
 CREATE TABLE USERS
 (
-	userName VARCHAR2(32) NOT NULL ,
-	userPassword VARCHAR2(6) NOT NULL ,
-	firstName VARCHAR2(64) NOT NULL ,
-    secondName VARCHAR2(64) NOT NULL ,
-    addressLine1 VARCHAR2(128) NOT NULL ,
-    addressLine2 VARCHAR2(128) NOT NULL ,
-    cityName VARCHAR2(64) NOT NULL ,
-    telephone VARCHAR2(10) NOT NULL ,
-    mobilePhone VARCHAR2(10) NOT NULL ,
+	userName VARCHAR(32) NOT NULL ,
+	userPassword VARCHAR(6) NOT NULL ,
+	firstName VARCHAR(64) NOT NULL ,
+    secondName VARCHAR(64) NOT NULL ,
+    addressLine1 VARCHAR(128) NOT NULL ,
+    addressLine2 VARCHAR(128) NOT NULL ,
+    cityName VARCHAR(64) NOT NULL ,
+    telephone VARCHAR(10) NOT NULL ,
+    mobilePhone VARCHAR(10) NOT NULL ,
     
     CONSTRAINT USERS_PK PRIMARY KEY (userName),
     CONSTRAINT MOBILE_UNIQUE_CK UNIQUE (mobilePhone),
-    CONSTRAINT TELEPHONE_UNIQUE_CK UNIQUE (telephone),
-    CONSTRAINT USERPASSWORD_VALID_CK CHECK (LENGTHB(userPassword) = 6),
-    CONSTRAINT TELEPHONE_VALID_CK CHECK (LENGTHB(telephone) >= 7),
-    CONSTRAINT MOBILE_VALID_CK CHECK (LENGTHB(mobilePhone) = 10)
+    CONSTRAINT TELEPHONE_UNIQUE_CK UNIQUE (telephone)
 
 );
 
 /*Create new table: CATEGORIES*/
 CREATE TABLE CATEGORIES
 (
-    categoryID VARCHAR2(3) NOT NULL ,
-    categoryDescription VARCHAR2(32) NOT NULL ,
+    categoryID VARCHAR(3) NOT NULL ,
+    categoryDescription VARCHAR(32) NOT NULL ,
     
     CONSTRAINT CATEGORIES_PK PRIMARY KEY (categoryID)
 
@@ -47,13 +44,13 @@ CREATE TABLE CATEGORIES
 /*Create new table: BOOKS*/
 CREATE TABLE BOOKS
 (
-    ISBN VARCHAR2(13) NOT NULL ,
-    bookTitle VARCHAR2(64) NOT NULL ,
-    authorName VARCHAR2(64) NOT NULL ,
-    editionVersion NUMBER(1) NOT NULL ,
-    editionYear VARCHAR2(4) NOT NULL ,
-    categoryID VARCHAR2(3) NOT NULL ,
-    reservationStatus VARCHAR2(1) NOT NULL ,
+    ISBN VARCHAR(13) NOT NULL ,
+    bookTitle VARCHAR(64) NOT NULL ,
+    authorName VARCHAR(64) NOT NULL ,
+    editionVersion INTEGER(1) NOT NULL ,
+    editionYear YEAR NOT NULL ,
+    categoryID VARCHAR(3) NOT NULL ,
+    reservationStatus VARCHAR(1) NOT NULL ,
     
     CONSTRAINT BOOKS_PK PRIMARY KEY (ISBN),
     CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (categoryID) REFERENCES CATEGORIES(categoryID)
@@ -63,8 +60,8 @@ CREATE TABLE BOOKS
 /*Create new table: RESERVATIONS*/
 CREATE TABLE RESERVATIONS
 (
-    ISBN VARCHAR2(13) NOT NULL ,
-    userName VARCHAR2(32) NOT NULL ,
+    ISBN VARCHAR(13) NOT NULL ,
+    userName VARCHAR(32) NOT NULL ,
     reservationDate DATE NOT NULL,
     
     CONSTRAINT BOOKS_CATEGORIES_ISBN_FK FOREIGN KEY (ISBN) REFERENCES BOOKS(ISBN),
