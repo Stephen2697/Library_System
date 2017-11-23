@@ -1,0 +1,82 @@
+/*
+AUTHOR NAME: Stephen Alger
+
+DATE OF LAST MAJOR UPDATE: 23-10-2017
+VERION IDENTIFIER: 1.0
+FILE TYPE: Structured Query Language (.sql)
+
+DOCUMENT SPECIFICATION(s): 
+{"NULL"}
+
+CODE DEBUGGED WITH ORACLE LIVE SQL - 'https://livesql.oracle.com'
+*/
+
+
+/*Create new table: USERS*/
+CREATE TABLE USERS
+(
+	userName NUMBER(32) NOT NULL ,
+	userPassword VARCHAR2(6) NOT NULL ,
+	firstName VARCHAR2(64) NOT NULL ,
+    secondName VARCHAR2(64) NOT NULL ,
+    addressLine1 VARCHAR2(128) NOT NULL ,
+    addressLine2 VARCHAR2(128) NOT NULL ,
+    cityName VARCHAR2(64) NOT NULL ,
+    telephone VARCHAR2(7) NOT NULL ,
+    mobilePhone VARCHAR2(10) NOT NULL ,
+    
+    CONSTRAINT USERS_PK PRIMARY KEY (userName),
+    CONSTRAINT MOBILE_UNIQUE_CK UNIQUE (mobilePhone),
+    CONSTRAINT TELEPHONE_UNIQUE_CK UNIQUE (telephone),
+    CONSTRAINT USERPASSWORD_VALID_CK CHECK (userPassword...)
+
+);
+
+/*Create new table: BOOKS*/
+CREATE TABLE BOOKS
+(
+    ISBN VARCHAR2(13) NOT NULL ,
+    bookTitle VARCHAR2(64) NOT NULL ,
+    authorName VARCHAR2(64) NOT NULL ,
+    editionVersion VARCHAR2(32) NOT NULL ,
+    editionYear YEAR NOT NULL ,
+    categoryID VARCHAR2(3) NOT NULL ,
+    reservationStatus VARCHAR2(1) NOT NULL ,
+    
+    CONSTRAINT BOOKS_PK PRIMARY KEY (ISBN),
+    CONSTRAINT YEAR_VALID_CK CHECK (..),
+    CONSTRAINT RESERVED_CK CHECK (..),
+    CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (categoryID)
+      REFERENCES CATEGORIES(categoryID)
+
+);
+
+/*Create new table: CATEGORIES*/
+CREATE TABLE CATEGORIES
+(
+    categoryID VARCHAR2(3) NOT NULL ,
+    categoryDescription VARCHAR2(32) NOT NULL ,
+
+    CONSTRAINT CATEGORIES_PK PRIMARY KEY (categoryID),
+    CONSTRAINT categoryDescription UNIQUE (categoryDescription)
+
+);
+
+/*Create new table: RESERVATIONS*/
+CREATE TABLE RESERVATIONS
+(
+    ISBN VARCHAR2(3) NOT NULL ,
+    userName VARCHAR2(32) NOT NULL ,
+    reservationDate DATE NOT NULL,
+
+    CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (ISBN)
+      REFERENCES BOOKS(ISBN),
+    CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (userName)
+      REFERENCES USERS(userName),
+    CONSTRAINT RESERVATIONS_PK PRIMARY KEY (ISBN, userName)
+    
+
+);
+
+
+
