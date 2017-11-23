@@ -15,20 +15,32 @@ CODE DEBUGGED WITH ORACLE LIVE SQL - 'https://livesql.oracle.com'
 /*Create new table: USERS*/
 CREATE TABLE USERS
 (
-	userName NUMBER(32) NOT NULL ,
+	userName VARCHAR2(32) NOT NULL ,
 	userPassword VARCHAR2(6) NOT NULL ,
 	firstName VARCHAR2(64) NOT NULL ,
     secondName VARCHAR2(64) NOT NULL ,
     addressLine1 VARCHAR2(128) NOT NULL ,
     addressLine2 VARCHAR2(128) NOT NULL ,
     cityName VARCHAR2(64) NOT NULL ,
-    telephone VARCHAR2(7) NOT NULL ,
+    telephone VARCHAR2(10) NOT NULL ,
     mobilePhone VARCHAR2(10) NOT NULL ,
     
     CONSTRAINT USERS_PK PRIMARY KEY (userName),
     CONSTRAINT MOBILE_UNIQUE_CK UNIQUE (mobilePhone),
     CONSTRAINT TELEPHONE_UNIQUE_CK UNIQUE (telephone),
-    CONSTRAINT USERPASSWORD_VALID_CK CHECK (userPassword...)
+    CONSTRAINT USERPASSWORD_VALID_CK CHECK (LENGTHB(userPassword) = 6),
+    CONSTRAINT TELEPHONE_VALID_CK CHECK (LENGTHB(telephone) >= 7),
+    CONSTRAINT MOBILE_VALID_CK CHECK (LENGTHB(mobilePhone) = 10)
+
+);
+
+/*Create new table: CATEGORIES*/
+CREATE TABLE CATEGORIES
+(
+    categoryID VARCHAR2(3) NOT NULL ,
+    categoryDescription VARCHAR2(32) NOT NULL ,
+    
+    CONSTRAINT CATEGORIES_PK PRIMARY KEY (categoryID)
 
 );
 
@@ -38,45 +50,65 @@ CREATE TABLE BOOKS
     ISBN VARCHAR2(13) NOT NULL ,
     bookTitle VARCHAR2(64) NOT NULL ,
     authorName VARCHAR2(64) NOT NULL ,
-    editionVersion VARCHAR2(32) NOT NULL ,
-    editionYear YEAR NOT NULL ,
+    editionVersion NUMBER(1) NOT NULL ,
+    editionYear VARCHAR2(4) NOT NULL ,
     categoryID VARCHAR2(3) NOT NULL ,
     reservationStatus VARCHAR2(1) NOT NULL ,
     
     CONSTRAINT BOOKS_PK PRIMARY KEY (ISBN),
-    CONSTRAINT YEAR_VALID_CK CHECK (..),
-    CONSTRAINT RESERVED_CK CHECK (..),
-    CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (categoryID)
-      REFERENCES CATEGORIES(categoryID)
-
-);
-
-/*Create new table: CATEGORIES*/
-CREATE TABLE CATEGORIES
-(
-    categoryID VARCHAR2(3) NOT NULL ,
-    categoryDescription VARCHAR2(32) NOT NULL ,
-
-    CONSTRAINT CATEGORIES_PK PRIMARY KEY (categoryID),
-    CONSTRAINT categoryDescription UNIQUE (categoryDescription)
+    CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (categoryID) REFERENCES CATEGORIES(categoryID)
 
 );
 
 /*Create new table: RESERVATIONS*/
 CREATE TABLE RESERVATIONS
 (
-    ISBN VARCHAR2(3) NOT NULL ,
+    ISBN VARCHAR2(13) NOT NULL ,
     userName VARCHAR2(32) NOT NULL ,
     reservationDate DATE NOT NULL,
-
-    CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (ISBN)
-      REFERENCES BOOKS(ISBN),
-    CONSTRAINT BOOKS_CATEGORIES_FK FOREIGN KEY (userName)
-      REFERENCES USERS(userName),
-    CONSTRAINT RESERVATIONS_PK PRIMARY KEY (ISBN, userName)
+    
+    CONSTRAINT BOOKS_CATEGORIES_ISBN_FK FOREIGN KEY (ISBN) REFERENCES BOOKS(ISBN),
+    CONSTRAINT BOOKS_CATEGORIES_USERNAME_FK FOREIGN KEY (userName) REFERENCES USERS(userName),
+    CONSTRAINT RESERVATIONS_PK PRIMARY KEY (ISBN)
     
 
 );
 
+/*Insert Data into Users Table
+//Format: INSERT INTO USERS VALUES (UN, PW, FN, SN, AD1, AD2, CN, T,MP);*/
+INSERT INTO USERS VALUES ('alanjmckenna', 't1234s', 'Alan', 'McKenna', '38 Cranley Road', 'Fairview', 'Dublin', '9998377','0856625567');
+INSERT INTO USERS VALUES ('joecrotty', 'kj7899', 'Joseph', 'Crotty', 'Apt 5 Clyde Road', 'Donnybrook', 'Dublin', '8887889','0876654456');
+INSERT INTO USERS VALUES ('tommy100', '123456', 'tom', 'behan', '14 hyde road', 'dalkey', 'dublin', '9983747','0876738782');
 
+/*Insert Data into Category Table
+//Format: INSERT INTO CATEGORIES VALUES (CATID, CATDESC);*/
+INSERT INTO CATEGORIES VALUES ('001', 'Health');
+INSERT INTO CATEGORIES VALUES ('002', 'Business');
+INSERT INTO CATEGORIES VALUES ('003', 'Biography');
+INSERT INTO CATEGORIES VALUES ('004', 'Technology');
+INSERT INTO CATEGORIES VALUES ('005', 'Travel');
+INSERT INTO CATEGORIES VALUES ('006', 'Self-Help');
+INSERT INTO CATEGORIES VALUES ('007', 'Cookery');
+INSERT INTO CATEGORIES VALUES ('008', 'Fiction');
 
+/*Insert Data into Books Table
+//Format: INSERT INTO BOOKS VALUES (ISBN, BT, AUT, ED, YR, CATID, RES);*/
+INSERT INTO BOOKS VALUES ('093-403992', 'Computers In Business', 'Alicia Oneill', 3, '1997', '003', 'N');
+INSERT INTO BOOKS VALUES ('23472-8729', 'Exploring Peru', 'Stephanie Birch', 4, '2005', '005', 'N');
+INSERT INTO BOOKS VALUES ('237-34823', 'Business Strategy', 'Jeff Peppard', 2, '2002', '002', 'N');
+INSERT INTO BOOKS VALUES ('23U8-923849', 'A guide to nutrition', 'John Thorpe', 2, '1997', '001', 'N');
+INSERT INTO BOOKS VALUES ('2983-3494', 'Cooking for children', 'Anabelle Sharpe', 1, '2003', '007', 'N');
+INSERT INTO BOOKS VALUES ('82N8-308', 'computers for idiots', 'Susan Oneill', 5, '1998', '004', 'N');
+INSERT INTO BOOKS VALUES ('9823-23984', 'My life in picture', 'Kevin Graham', 8, '2004', '001', 'N');
+INSERT INTO BOOKS VALUES ('9823-2403-0', 'DaVinci Code', 'Dan Brown', 1, '2003', '008', 'N');
+INSERT INTO BOOKS VALUES ('98234-029384', 'My ranch in Texas', 'George Bush', 1, '2005', '001', 'Y');
+INSERT INTO BOOKS VALUES ('9823-98345', 'How to cook Italian food', 'Jamie Oliver', 2, '2005', '007', 'Y');
+INSERT INTO BOOKS VALUES ('9823-98487', 'Optimising your business', 'Cleo Blair', 1, '2001', '002', 'N');
+INSERT INTO BOOKS VALUES ('988745-234', 'Tara Road', 'Maeve Binchy', 4, '2002', '008', 'N');
+INSERT INTO BOOKS VALUES ('993-004-00', 'My Life in Bits', 'John Smith', 1, '2001', '001', 'N');
+INSERT INTO BOOKS VALUES ('9987-0039882', 'Shooting History', 'Jon Snow', 1, '2003', '001', 'N');
+
+/*Insert Data into Reservations Table
+//Format: INSERT INTO RESERVATIONS VALUES (ISBN, UN , RESDATE);*/
+INSERT INTO RESERVATIONS VALUES ('98234-029384', 'joecrotty', '11-Oct-2008');
+INSERT INTO RESERVATIONS VALUES ('9823-98345', 'tommy100', '11-Oct-2008');
