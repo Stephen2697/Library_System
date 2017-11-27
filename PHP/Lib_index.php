@@ -82,11 +82,13 @@
       return $data;
     } //end test_input
 
+    $connection->close();
+
 ?>
 
 
 <html>
-    <hr><br>
+    <hr><br><h1>Login</h1>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
     Username: 
